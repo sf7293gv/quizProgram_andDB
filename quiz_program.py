@@ -9,17 +9,19 @@ from sqlite3.dbapi2 import connect
 
 db = 'quizDatabase.db'
 
-
+""" This method will get all the topics/categories avaliable in the table """
 def get_quiz_topics():
+    topics_list = []
     with sqlite3.connect(db) as conn:
         result = conn.execute('SELECT category FROM questionTable')
-        topics_list = []
         for r in result:
             if topics_list.__contains__(r[0]) == False:
                 topics_list.append(r[0])
-        return topics_list
+    conn.close()
+    return topics_list
 
 
+""" This method will list the topics avaliable to the user and get his/her topic choice"""
 def topic_user_choice(topics_list):
     print('Choose the number of one of these topics, to be quizzed on: ')
 
@@ -31,13 +33,25 @@ def topic_user_choice(topics_list):
     categoryChoice = topics_list[choice]
     return categoryChoice
 
+""" This method will get the question and answers from the db and store them in a dictionary"""
+def get_questions_answers(topic):
+    qandaDict = {}
+    with sqlite3.connect(db) as conn:
+        query = conn.execute('select * from questionTable where category = ?', (topic,))
+        counter = 0
+        for r in query:
+            question = (r[1])
+            answerList = (r[2], r[3], r[4], r[5])
+            qandaDict[question] = answerList
+            counter = counter + 1
+    conn.close()
+    return qandaDict
 
 
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
-print('Here are the topics')
-print(list)
-print(user_topic_choice)
+qNaDictionary = get_questions_answers(user_topic_choice)
+
 
 # topics_list.append(firstRow[0])
 
@@ -50,16 +64,8 @@ print(user_topic_choice)
 
 
 
-# # query = db.execute(f'select * from questionTable where category = "{categoryChoice}"')
-# query = conn.execute(f'select * from questionTable where category = "{categoryChoice}"')
-# qandaDict = {}
-# counter = 0
+# query = db.execute(f'select * from questionTable where category = "{categoryChoice}"')
 
-# for r in query:
-#     question = (r[1])
-#     answerList = (r[2], r[3], r[4], r[5])
-#     qandaDict[question] = answerList
-#     counter = counter + 1
 
 
 

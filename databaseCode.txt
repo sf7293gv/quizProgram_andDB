@@ -1,0 +1,10 @@
+INSERT INTO questionTable (question, correctAnswer, wrongAnswer1, wrongAnswer2, wrongAnswer3, category, difficulty, Points) VALUES (
+	"Syria's capital city:", "Demascus", "Chicago", "Madaba", "Amman", "Geography", 2, 20
+);
+
+
+UPDATE questionTable SET Points = 10 WHERE questionID = 1;
+
+insert INTO scores (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned)VALUES (
+	"one", 1, 10, 11, 1, 2, 1, 20, 15
+);

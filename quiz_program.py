@@ -53,36 +53,47 @@ will list the answer list for each question and will store/compare the user answ
 def quiz_user(qandaDict, amountQuestions): 
     nq = int(input(f'Topic has {amountQuestions} questions. How many do you want to answer? '))
     c = 0
-    answers = []
+    answers = {}
     for item in qandaDict.items():
         if c < nq:
-            print(f'Question: {item[0]}')
+            question = item[0]
+            print(f'Question: {question}')
             print('choose one of these answers for the question: ')
             for i in range (0, len(item[1])):
                 print(f'{i+1}- {item[1][i]}')
             user_input = int(input('Choose the number of the answer: '))
             user_answer = item[1][user_input - 1]
             correct_answer = item[1][0]
-            answers = (user_answer, correct_answer)
-            # print(f'Your answer is : {user_answer}')
-            # if (user_answer == correct_answer):
-            #     print('Correct!!')
-            # else:
-            #     print(f'Correct answer: {correct_answer}')
-
-            # print(item[1][0])
+            answers[question] = (user_answer,correct_answer)
+            
             c = c + 1
         else:
             break
-        return answers
+    return answers
+
+
+""" This method will be passed a dictionary that contains 
+    (questions, user answers, correct answers) and will compare between the answers """
+def compare_answers(answers_dict):
+    for key, value in answers_dict.items():
+        question = key
+        user_answer = value[0]
+        correct_answer = value[1]
+        print(f'For the question: {question} User answer: {user_answer}, Correct answer: {correct_answer}')
+        if (user_answer == correct_answer):
+            print('Correct!!')
+        else:
+            print(f'Correct answer: {correct_answer}')
+
+
 
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
 res = get_questions_answers(user_topic_choice)
 qNaDictionary = res[0]
 questions_amount = res[1]
-
-answers_list = quiz_user(qNaDictionary, questions_amount)
+answers_dict = quiz_user(qNaDictionary, questions_amount)
+compare_answers(answers_dict)
 
 
 

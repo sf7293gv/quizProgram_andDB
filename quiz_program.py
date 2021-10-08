@@ -1,4 +1,5 @@
 import sqlite3
+import time
 from sqlite3.dbapi2 import connect
 
 
@@ -119,14 +120,34 @@ def add_info_quiz_results_table(user_answers_dict):
 
     # print('question_dictionary')
 
-    for item in user_answers_dict.items():
-        print(item)
+    
     
 
-    # with sqlite3.connect(db) as conn:
-    #     query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-
-    #     conn.execute(query, list)
+    with sqlite3.connect(db) as conn:
+        query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        counter = 1
+        for item in user_answers_dict.items():
+            qID = item[0][4]
+            timestarted = time.asctime()
+            timeended = time.asctime()
+            q = item[0][0]
+            uA = item[1][0]
+            qA = item[1][1]
+            correct = 2
+            questionPoints = item[0][3]
+            pointsEarned = 150
+            if uA == qA:
+                correct = 1
+                pointsEarned = questionPoints
+            else:
+                correct = 0
+                pointsEarned = 0
+            
+            list = (counter, qID, timestarted, timeended, q, uA, correct, questionPoints, pointsEarned)
+            print(list)
+            conn.execute(query, list)
+            print(item)
+        
 
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)

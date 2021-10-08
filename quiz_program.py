@@ -122,26 +122,6 @@ def compare_answers(answers_dict):
     second contains more data for each question 
     and will insert new rows to the quiz_results table in the database """
 def add_info_quiz_results_table(user_answers_dict):
-    # print('answers_dict')
-    # questions_list = []
-    # question_data = []
-    # row_data = []
-    # for item in user_answers_dict.items():
-    #     questions_list.append(item[0])
-    # for item in question_dictionary.items():
-    #     for i in range (0, len(questions_list)):
-    #         if questions_list[i] == item[0][0]:
-    #             question_data.append(item[0])
-    # for i in questions_list:
-    #     print(i)
-    # for i in question_data:
-    #     print(i)
-
-    # print('question_dictionary')
-
-    
-    
-
     with sqlite3.connect(db) as conn:
         try:
             query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'

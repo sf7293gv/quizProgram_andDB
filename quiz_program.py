@@ -84,9 +84,6 @@ def compare_answers(answers_dict, topic):
         user_answer = value[0]
         correct_answer = value[1]
         
-        for r in result:
-            if r[1] == question:
-                print(r)
         print(f'For the question: {question} User answer: {user_answer}, Correct answer: {correct_answer}')
         if (user_answer == correct_answer):
             print('Correct!!')

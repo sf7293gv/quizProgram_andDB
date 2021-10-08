@@ -40,9 +40,13 @@ def get_questions_answers(topic):
     with sqlite3.connect(db) as conn:
         query = conn.execute('select * from questionTable where category = ?', (topic,))
         for r in query:
-            question = (r[1])
+            question = r[1]
+            category = r[6]
+            difficulty = r[7]
+            question_points = r[8]
+            qInfo_list = (question, category, difficulty, question_points)
             answerList = (r[2], r[3], r[4], r[5])
-            qandaDict[question] = answerList
+            qandaDict[qInfo_list] = answerList
             counter = counter + 1
     conn.close()
     return (qandaDict, counter)
@@ -56,7 +60,7 @@ def quiz_user(qandaDict, amountQuestions):
     answers = {}
     for item in qandaDict.items():
         if c < nq:
-            question = item[0]
+            question = item[0][0]
             print(f'Question: {question}')
             print('choose one of these answers for the question: ')
             for i in range (0, len(item[1])):
@@ -74,11 +78,15 @@ def quiz_user(qandaDict, amountQuestions):
 
 """ This method will be passed a dictionary that contains 
     (questions, user answers, correct answers) and will compare between the answers """
-def compare_answers(answers_dict):
+def compare_answers(answers_dict, topic):
     for key, value in answers_dict.items():
         question = key
         user_answer = value[0]
         correct_answer = value[1]
+        result = display_question_info(topic)
+        for r in result:
+            if r[1] == question:
+                print(r)
         print(f'For the question: {question} User answer: {user_answer}, Correct answer: {correct_answer}')
         if (user_answer == correct_answer):
             print('Correct!!')
@@ -86,14 +94,21 @@ def compare_answers(answers_dict):
             print(f'Correct answer: {correct_answer}')
 
 
+"""  """
+def display_question_info(topic):
+    result = ""
+    with sqlite3.connect(db) as conn:
+        result = conn.execute('select * from questionTable where category = ?', (topic,))
+    conn.close()
+    return result
 
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
 res = get_questions_answers(user_topic_choice)
-qNaDictionary = res[0]
+question_dictionary = res[0]
 questions_amount = res[1]
-answers_dict = quiz_user(qNaDictionary, questions_amount)
-compare_answers(answers_dict)
+answers_dict = quiz_user(question_dictionary, questions_amount)
+compare_answers(answers_dict, user_topic_choice)
 
 
 

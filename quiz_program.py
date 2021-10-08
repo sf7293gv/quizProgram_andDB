@@ -39,7 +39,8 @@ def get_questions_answers(topic):
             category = r[6]
             difficulty = r[7]
             question_points = r[8]
-            qInfo_list = (question, category, difficulty, question_points)
+            question_id = r[0]
+            qInfo_list = (question, category, difficulty, question_points, question_id)
             answerList = (r[2], r[3], r[4], r[5])
             qandaDict[qInfo_list] = answerList
             counter = counter + 1

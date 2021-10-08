@@ -83,7 +83,7 @@ def compare_answers(answers_dict, topic):
         question = key
         user_answer = value[0]
         correct_answer = value[1]
-        result = display_question_info(topic)
+        
         for r in result:
             if r[1] == question:
                 print(r)
@@ -93,14 +93,6 @@ def compare_answers(answers_dict, topic):
         else:
             print(f'Correct answer: {correct_answer}')
 
-
-"""  """
-def display_question_info(topic):
-    result = ""
-    with sqlite3.connect(db) as conn:
-        result = conn.execute('select * from questionTable where category = ?', (topic,))
-    conn.close()
-    return result
 
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)

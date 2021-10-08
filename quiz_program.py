@@ -60,14 +60,16 @@ def quiz_user(qandaDict, amountQuestions):
             category = item[0][1]
             difficulty = item[0][2]
             q_points = item[0][3]
-            print(f'Question: {question}, category: {category}, difficulty: {difficulty}, points available: {q_points}')
+            q_id = item[0][4]
+            print(f'Question: {question}, category: {category}, difficulty: {difficulty}, points available: {q_points}, question id: {q_id}')
             print('choose one of these answers for the question: ')
             for i in range (0, len(item[1])):
                 print(f'{i+1}- {item[1][i]}')
             user_input = int(input('Choose the number of the answer: '))
             user_answer = item[1][user_input - 1]
             correct_answer = item[1][0]
-            answers[question] = (user_answer,correct_answer)
+            q_data = (question, category, difficulty, q_points, q_id)
+            answers[q_data] = (user_answer,correct_answer)
             
             c = c + 1
         else:
@@ -99,22 +101,26 @@ def compare_answers(answers_dict):
 """ This method will be passed two dictionaries, first one contains questions and user answers,
     second contains more data for each question 
     and will insert new rows to the quiz_results table in the database """
-def add_info_quiz_results_table(user_answers_dict, question_dictionary):
+def add_info_quiz_results_table(user_answers_dict):
     # print('answers_dict')
-    questions_list = []
-    question_data = []
-    row_data = []
-    for item in user_answers_dict.items():
-        questions_list.append(item[0])
-    for item in question_dictionary.items():
-        for i in range (0, len(questions_list)):
-            if questions_list[i] == item[0][0]:
-                question_data.append(item[0])
-    for i in questions_list:
-        print(i)
-    for i in question_data:
-        print(i)
+    # questions_list = []
+    # question_data = []
+    # row_data = []
+    # for item in user_answers_dict.items():
+    #     questions_list.append(item[0])
+    # for item in question_dictionary.items():
+    #     for i in range (0, len(questions_list)):
+    #         if questions_list[i] == item[0][0]:
+    #             question_data.append(item[0])
+    # for i in questions_list:
+    #     print(i)
+    # for i in question_data:
+    #     print(i)
+
     # print('question_dictionary')
+
+    for item in user_answers_dict.items():
+        print(item)
     
 
     # with sqlite3.connect(db) as conn:
@@ -129,4 +135,4 @@ question_dictionary = res[0]
 questions_amount = res[1]
 user_answers_dict = quiz_user(question_dictionary, questions_amount)
 compare_answers(user_answers_dict)
-add_info_quiz_results_table(user_answers_dict, question_dictionary)
+add_info_quiz_results_table(user_answers_dict)

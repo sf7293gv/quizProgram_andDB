@@ -1,15 +1,10 @@
 import sqlite3
 from sqlite3.dbapi2 import connect
 
-# db = sqlite3.connect('quizDatabase.db')
-
-# cur = db.cursor()
-
-# result = cur.execute('SELECT category FROM questionTable')
 
 db = 'quizDatabase.db'
 
-""" This method will get all the topics/categories avaliable in the table """
+""" This method will get all the topics/categories available in the table """
 def get_quiz_topics():
     topics_list = []
     with sqlite3.connect(db) as conn:
@@ -21,7 +16,7 @@ def get_quiz_topics():
     return topics_list
 
 
-""" This method will list the topics avaliable to the user and get his/her topic choice"""
+""" This method will list the topics available to the user and get his/her topic choice"""
 def topic_user_choice(topics_list):
     print('Choose the number of one of these topics, to be quizzed on: ')
 
@@ -52,7 +47,7 @@ def get_questions_answers(topic):
     return (qandaDict, counter)
 
 """ This method will show the user the amount of questions for a topic, 
-will ask how many questions user wants to answer, 
+will ask how many questions user wants to answer and list questions/info, 
 will list the answer list for each question and will store/compare the user answer """
 def quiz_user(qandaDict, amountQuestions): 
     nq = int(input(f'Topic has {amountQuestions} questions. How many do you want to answer? '))
@@ -61,7 +56,10 @@ def quiz_user(qandaDict, amountQuestions):
     for item in qandaDict.items():
         if c < nq:
             question = item[0][0]
-            print(f'Question: {question}')
+            category = item[0][1]
+            difficulty = item[0][2]
+            q_points = item[0][3]
+            print(f'Question: {question}, category: {category}, difficulty: {difficulty}, points available: {q_points}')
             print('choose one of these answers for the question: ')
             for i in range (0, len(item[1])):
                 print(f'{i+1}- {item[1][i]}')
@@ -98,21 +96,3 @@ question_dictionary = res[0]
 questions_amount = res[1]
 answers_dict = quiz_user(question_dictionary, questions_amount)
 compare_answers(answers_dict, user_topic_choice)
-
-
-
-# topics_list.append(firstRow[0])
-
-
-
-
-    
-    
-
-
-
-
-
-
-
-

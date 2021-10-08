@@ -82,6 +82,8 @@ def compare_answers(answers_dict):
         question = key
         user_answer = value[0]
         correct_answer = value[1]
+        print('key val pair:')
+        print(key, value)
         
         print(f'For the question: {question} User answer: {user_answer}, Correct answer: {correct_answer}')
         if (user_answer == correct_answer):
@@ -93,14 +95,38 @@ def compare_answers(answers_dict):
 # insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned)VALUES (
 # 	"one", 1, 10, 11, 1, 2, 1, 20, 15
 # );
-def add_info_quiz_results_table():
+
+""" This method will be passed two dictionaries, first one contains questions and user answers,
+    second contains more data for each question 
+    and will insert new rows to the quiz_results table in the database """
+def add_info_quiz_results_table(user_answers_dict, question_dictionary):
+    # print('answers_dict')
+    questions_list = []
+    question_data = []
+    row_data = []
+    for item in user_answers_dict.items():
+        questions_list.append(item[0])
+    for item in question_dictionary.items():
+        for i in range (0, len(questions_list)):
+            if questions_list[i] == item[0][0]:
+                question_data.append(item[0])
+    for i in questions_list:
+        print(i)
+    for i in question_data:
+        print(i)
+    # print('question_dictionary')
     
 
+    # with sqlite3.connect(db) as conn:
+    #     query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+
+    #     conn.execute(query, list)
 
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
 res = get_questions_answers(user_topic_choice)
 question_dictionary = res[0]
 questions_amount = res[1]
-answers_dict = quiz_user(question_dictionary, questions_amount)
-compare_answers(answers_dict)
+user_answers_dict = quiz_user(question_dictionary, questions_amount)
+compare_answers(user_answers_dict)
+add_info_quiz_results_table(user_answers_dict, question_dictionary)

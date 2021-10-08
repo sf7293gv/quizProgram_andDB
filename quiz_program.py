@@ -77,7 +77,7 @@ def quiz_user(qandaDict, amountQuestions):
 
 """ This method will be passed a dictionary that contains 
     (questions, user answers, correct answers) and will compare between the answers """
-def compare_answers(answers_dict, topic):
+def compare_answers(answers_dict):
     for key, value in answers_dict.items():
         question = key
         user_answer = value[0]
@@ -90,10 +90,17 @@ def compare_answers(answers_dict, topic):
             print(f'Correct answer: {correct_answer}')
 
 
+# insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned)VALUES (
+# 	"one", 1, 10, 11, 1, 2, 1, 20, 15
+# );
+def add_info_quiz_results_table():
+    
+
+
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
 res = get_questions_answers(user_topic_choice)
 question_dictionary = res[0]
 questions_amount = res[1]
 answers_dict = quiz_user(question_dictionary, questions_amount)
-compare_answers(answers_dict, user_topic_choice)
+compare_answers(answers_dict)

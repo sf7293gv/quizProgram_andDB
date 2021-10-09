@@ -122,10 +122,10 @@ def compare_answers(answers_dict):
     second contains more data for each question 
     and will insert new rows to the quiz_results table in the database """
 def add_info_quiz_results_table(user_answers_dict):
+    user_name = get_user_id()
     with sqlite3.connect(db) as conn:
         try:
-            query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-            counter = 1
+            query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'        
             for item in user_answers_dict.items():
                 qID = item[0][4]
                 timestarted = time.asctime()
@@ -143,12 +143,22 @@ def add_info_quiz_results_table(user_answers_dict):
                     correct = 0
                     pointsEarned = 0
                 
-                list = (counter, qID, timestarted, timeended, q, uA, correct, questionPoints, pointsEarned)
+                list = (user_name, qID, timestarted, timeended, q, uA, correct, questionPoints, pointsEarned)
                 print(list)
                 conn.execute(query, list)
                 print(item)
+                counter = counter + 1
         except sqlite3.Error:
             print('Error inserting data to table')
+
+""" This method will ask the user for their user name and return it """
+def get_user_id():
+    userID = ""
+    while (True):
+        userID = input("Enter user name: ")
+        if (userID != ""):
+            break
+    return userID
         
 
 list = get_quiz_topics()

@@ -146,8 +146,7 @@ def add_info_quiz_results_table(user_answers_dict):
                 list = (user_name, qID, timestarted, timeended, q, uA, correct, questionPoints, pointsEarned)
                 print(list)
                 conn.execute(query, list)
-                print(item)
-                counter = counter + 1
+                print(item)                
         except sqlite3.Error:
             print('Error inserting data to table')
 

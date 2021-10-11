@@ -28,10 +28,12 @@ def topic_user_choice(topics_list):
 
         for i in range(0, len(topics_list)):
             print(f'{i+1}- {topics_list[i]}')
-        
-        choice = int(input())
-        if choice <= len(topics_list) and choice > 0:
-            break
+        try:
+            choice = int(input())
+            if choice <= len(topics_list) and choice > 0:
+                break
+        except ValueError:
+            print('Enter a valid number.')
     choice = choice - 1
     categoryChoice = topics_list[choice]
     return categoryChoice
@@ -62,9 +64,12 @@ def get_questions_answers(topic):
     will ask how many questions user wants to answer """
 def amount_of_questions_to_ask(amountQuestions):
     while (True):
-        nq = int(input(f'Topic has {amountQuestions} questions. How many do you want to answer? '))
-        if nq > 0 and nq <= amountQuestions:
-            break
+        try:
+            nq = int(input(f'Topic has {amountQuestions} questions. How many do you want to answer? '))
+            if nq > 0 and nq <= amountQuestions:
+                break
+        except ValueError:
+            print('Enter a valid number.')
     return nq
 
 
@@ -88,9 +93,12 @@ def quiz_user(qandaDict, user_questions_amount):
                 print(f'{i+1}- {item[1][i]}')
 
             while (True):
-                user_input = int(input('Choose the number of the answer: '))
-                if user_input > 0 and user_input <= len(item[1]):                    
-                    break
+                try:
+                    user_input = int(input('Choose the number of the answer: '))
+                    if user_input > 0 and user_input <= len(item[1]):                    
+                        break
+                except ValueError:
+                    print('Enter a valid number.')
             
             user_answer = item[1][user_input - 1]
             correct_answer = item[1][0]
@@ -232,6 +240,6 @@ correctQamount = amount_of_correct_answers_for_user(user_name)
 pointsAvailable = amount_of_points_available(user_name)
 pointsEarned = amount_of_points_earned(user_name)
 get_quiz_results(user_questions_amount, correctQamount, pointsAvailable, pointsEarned)
-clear_quiz_results_table()
+
 
 

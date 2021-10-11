@@ -124,7 +124,6 @@ def compare_answers(answers_dict):
             print(f'Correct answer: {correct_answer}')
 
 
-
 """ This method will be passed two dictionaries, first one contains questions and user answers,
     second contains more data for each question 
     and will insert new rows to the quiz_results table in the database """
@@ -224,6 +223,7 @@ def clear_quiz_results_table():
             print('Error deleting data from table')
     conn.close()
 
+
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
 res = get_questions_answers(user_topic_choice)
@@ -239,7 +239,4 @@ add_info_quiz_results_table(user_answers_dict, user_name)
 correctQamount = amount_of_correct_answers_for_user(user_name)
 pointsAvailable = amount_of_points_available(user_name)
 pointsEarned = amount_of_points_earned(user_name)
-get_quiz_results(user_questions_amount, correctQamount, pointsAvailable, pointsEarned)
-
-
-
+get_quiz_results(user_questions_amount, correctQamount, pointsAvailable, pointsEarned) 

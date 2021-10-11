@@ -120,8 +120,7 @@ def compare_answers(answers_dict):
 """ This method will be passed two dictionaries, first one contains questions and user answers,
     second contains more data for each question 
     and will insert new rows to the quiz_results table in the database """
-def add_info_quiz_results_table(user_answers_dict):
-    user_name = get_user_id()
+def add_info_quiz_results_table(user_answers_dict, user_name):    
     with sqlite3.connect(db) as conn:
         try:
             query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'        
@@ -148,6 +147,7 @@ def add_info_quiz_results_table(user_answers_dict):
                 # print(item)                
         except sqlite3.Error:
             print('Error inserting data to table')
+    conn.close()
 
 """ This method will ask the user for their user name and return it """
 def get_user_id():
@@ -164,6 +164,17 @@ def get_quiz_results(questions_amount):
     print(f'It took you {time_taken} seconds to finish the quiz.')
     print(f'Amount of questions you answered: {questions_amount}')
 
+def amount_of_correct_answers_for_user(user_name):
+    with sqlite3.connect(db) as conn:
+        try:
+            sql = conn.execute("SELECT count(*) as 'result' from quiz_results where correct = 1 and userID = ?", (user_name,))
+            result = sql.fetchone()
+            correct_answers_amount = result[0]
+            return correct_answers_amount
+        except sqlite3.Error:
+            print('Error fetching data from table')
+    conn.close()
+    return
 
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
@@ -175,7 +186,9 @@ user_questions_amount = amount_of_questions_to_ask(questions_amount)
 user_answers_dict = quiz_user(question_dictionary, user_questions_amount)
 compare_answers(user_answers_dict)
 quiz_end_time = time.time()
-add_info_quiz_results_table(user_answers_dict)
+user_name = get_user_id()
+add_info_quiz_results_table(user_answers_dict, user_name)
 get_quiz_results(user_questions_amount)
+amount = amount_of_correct_answers_for_user(user_name)
 
 

@@ -45,3 +45,6 @@ UPDATE questionTable SET Points = 10 WHERE questionID = 1;
 insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned)VALUES (
 	"one", 1, 10, 11, 1, 2, 1, 20, 15
 );
+
+
+SELECT count(*) as 'test' from quiz_results where correct = 1 and userID = 'Moe';

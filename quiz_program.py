@@ -159,13 +159,14 @@ def get_user_id():
     return userID
 
 """ This method will show results show below to user """
-def get_quiz_results(questions_amount, correctQamount, pointsAvailable):
+def get_quiz_results(questions_amount, correctQamount, pointsAvailable, pointsEarned):
     time_taken = quiz_end_time - quiz_start_time
     time_taken = '%.2f' % time_taken
     print(f'It took you {time_taken} seconds to finish the quiz.')
     print(f'Amount of questions you answered: {questions_amount}')
     print(f'Amount of questions answered correctly by user: {correctQamount}')
     print(f'Amount of points available: {pointsAvailable}')
+    print(f'Amount of points earned: {pointsEarned}')
 
 """ This method will get the amount of questions answerd right by the user from the table """
 def amount_of_correct_answers_for_user(user_name):
@@ -180,6 +181,7 @@ def amount_of_correct_answers_for_user(user_name):
     conn.close()
     return
 
+""" This method will get the points available for the questions that the user answered from table """
 def amount_of_points_available(user_name):
     with sqlite3.connect(db) as conn:
         try:
@@ -187,6 +189,18 @@ def amount_of_points_available(user_name):
             result = sql.fetchone()
             points_available = result[0]
             return points_available
+        except sqlite3.Error:
+            print('Error fetching data from table')
+    conn.close()
+
+""" This method will get the points earned for the questions that the user answered correctly """
+def amount_of_points_earned(user_name):
+    with sqlite3.connect(db) as conn:
+        try:
+            sql = conn.execute("SELECT sum(pointsEarned) as 'result' from quiz_results where userID = ?", (user_name,))
+            result = sql.fetchone()
+            points_earned = result[0]
+            return points_earned
         except sqlite3.Error:
             print('Error fetching data from table')
     conn.close()
@@ -205,6 +219,7 @@ user_name = get_user_id()
 add_info_quiz_results_table(user_answers_dict, user_name)
 correctQamount = amount_of_correct_answers_for_user(user_name)
 pointsAvailable = amount_of_points_available(user_name)
-get_quiz_results(user_questions_amount, correctQamount, pointsAvailable)
+pointsEarned = amount_of_points_earned(user_name)
+get_quiz_results(user_questions_amount, correctQamount, pointsAvailable, pointsEarned)
 
 

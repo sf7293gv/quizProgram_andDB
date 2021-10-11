@@ -49,3 +49,4 @@ insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer,
 
 SELECT count(*) as 'test' from quiz_results where correct = 1 and userID = 'Moe';
 SELECT sum(questionPoints) as 'result' from quiz_results where userID = 'Moe';
+SELECT sum(pointsEarned) as 'result' from quiz_results where userID = 'Moe';

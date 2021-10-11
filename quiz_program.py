@@ -158,12 +158,15 @@ def get_user_id():
             break
     return userID
 
-def get_quiz_results(questions_amount):
+""" This method will show results show below to user """
+def get_quiz_results(questions_amount, correctQamount):
     time_taken = quiz_end_time - quiz_start_time
     time_taken = '%.2f' % time_taken
     print(f'It took you {time_taken} seconds to finish the quiz.')
     print(f'Amount of questions you answered: {questions_amount}')
+    print(f'Amount of questions answered correctly by user: {correctQamount}')
 
+""" This method will get the amount of questions answerd right by the user from the table """
 def amount_of_correct_answers_for_user(user_name):
     with sqlite3.connect(db) as conn:
         try:
@@ -188,7 +191,7 @@ compare_answers(user_answers_dict)
 quiz_end_time = time.time()
 user_name = get_user_id()
 add_info_quiz_results_table(user_answers_dict, user_name)
-get_quiz_results(user_questions_amount)
-amount = amount_of_correct_answers_for_user(user_name)
+correctQamount = amount_of_correct_answers_for_user(user_name)
+get_quiz_results(user_questions_amount, correctQamount)
 
 

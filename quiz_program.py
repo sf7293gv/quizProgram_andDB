@@ -205,6 +205,17 @@ def amount_of_points_earned(user_name):
             print('Error fetching data from table')
     conn.close()
 
+
+""" This method will delete all rows in the table """
+def clear_quiz_results_table():
+    with sqlite3.connect(db) as conn:
+        try:
+            sql = 'DELETE FROM quiz_results'
+            conn.execute(sql)
+        except sqlite3.Error:
+            print('Error deleting data from table')
+    conn.close()
+
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
 res = get_questions_answers(user_topic_choice)
@@ -221,5 +232,6 @@ correctQamount = amount_of_correct_answers_for_user(user_name)
 pointsAvailable = amount_of_points_available(user_name)
 pointsEarned = amount_of_points_earned(user_name)
 get_quiz_results(user_questions_amount, correctQamount, pointsAvailable, pointsEarned)
+clear_quiz_results_table()
 
 

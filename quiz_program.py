@@ -2,21 +2,29 @@ import sqlite3
 import time
 from sqlite3.dbapi2 import Error, connect
 
+# This file has a lot going on. There's user interaction, database interaction, tracking time... 
+# it should be split into separate modules, each with a particular focus 
+
 db = 'quizDatabase.db'
 
-""" This method will get all the topics/categories available in the table """
 def get_quiz_topics():
+    """ We know it's a method. This is shorter, to the point, conveys same information. 
+    Get all the topics/categories available in the table """
     topics_list = []
     with sqlite3.connect(db) as conn:
         try:
             result = conn.execute('SELECT category FROM questionTable')
             for r in result:
-                if topics_list.__contains__(r[0]) == False:
+                # don't use __contains__ it's a method that's called when you use the in operator, or not in,
+                if r[0] not in topics_list: 
+                # if topics_list.__contains__(r[0]) == False:
                     topics_list.append(r[0])
-        except sqlite3.Error:
-            print('Error fetching table')
+        except sqlite3.Error as e:
+            print(e) # or log e   All kinds of things can go wrong. You'll have no idea if you print a general error message
+            # having access to the stack trace, exception info is more helpful. Same comment for other DB error handlers
+            print('Error fetching table')  # is that what went wrong?
         
-    conn.close()
+    conn.close()  
     return topics_list
 
 
@@ -26,6 +34,11 @@ def topic_user_choice(topics_list):
     while (True):
         print('Choose the number of one of these topics, to be quizzed on: ')
 
+        # or use enumerate 
+        # for i, topic in enumerate(topics_list):
+        #     print(f'{i+1}- {topic}')
+
+
         for i in range(0, len(topics_list)):
             print(f'{i+1}- {topics_list[i]}')
         try:
@@ -34,7 +47,8 @@ def topic_user_choice(topics_list):
                 break
         except ValueError:
             print('Enter a valid number.')
-    choice = choice - 1
+
+    choice = choice - 1   # offsetting by 1 is very error prone. Can you think of a way to avoid this? 
     categoryChoice = topics_list[choice]
     return categoryChoice
 
@@ -46,6 +60,11 @@ def get_questions_answers(topic):
         try:
             query = conn.execute('select * from questionTable where category = ?', (topic,))
             for r in query:
+                # use the row factory so you can write 
+                # question = r['question']
+                # instead of remembering the indexes of the columns. 
+                # code is more readable too. 
+
                 question = r[1]
                 category = r[6]
                 difficulty = r[7]
@@ -65,18 +84,19 @@ def get_questions_answers(topic):
 def amount_of_questions_to_ask(amountQuestions):
     while (True):
         try:
-            nq = int(input(f'Topic has {amountQuestions} questions. How many do you want to answer? '))
-            if nq > 0 and nq <= amountQuestions:
+            # avoid abbreviations. 
+            number_of_questions = int(input(f'Topic has {amountQuestions} questions. How many do you want to answer? '))
+            if number_of_questions > 0 and number_of_questions <= amountQuestions:
                 break
         except ValueError:
             print('Enter a valid number.')
-    return nq
+    return number_of_questions
 
 
 """ This method  and list questions/info, 
 will list the answer list for each question and will store/compare the user answer """
 def quiz_user(qandaDict, user_questions_amount):     
-    c = 0
+    c = 0  # what is this variable for? It needs a better name 
     answers = {}
     for item in qandaDict.items():
         if c < user_questions_amount:
@@ -89,9 +109,10 @@ def quiz_user(qandaDict, user_questions_amount):
             print(f'Question: {question}, category: {category}, difficulty: {difficulty}, points available: {q_points}, question id: {q_id}')
             print('choose one of these answers for the question: ')
 
-            for i in range (0, len(item[1])):
+            for i in range (0, len(item[1])):  # enumerate is cleaner and less typing 
                 print(f'{i+1}- {item[1][i]}')
 
+            # this detail - getting a valid choice - can be delegated to a seprate function 
             while (True):
                 try:
                     user_input = int(input('Choose the number of the answer: '))
@@ -101,7 +122,7 @@ def quiz_user(qandaDict, user_questions_amount):
                     print('Enter a valid number.')
             
             user_answer = item[1][user_input - 1]
-            correct_answer = item[1][0]
+            correct_answer = item[1][0]  # What's happening here? 
             q_data = (question, category, difficulty, q_points, q_id)
             answers[q_data] = (user_answer,correct_answer)            
             c = c + 1
@@ -115,7 +136,7 @@ def quiz_user(qandaDict, user_questions_amount):
 def compare_answers(answers_dict):   
     for key, value in answers_dict.items():
         question = key
-        user_answer = value[0]
+        user_answer = value[0]  # what are these indexes? 
         correct_answer = value[1]     
         print(f'For the question: {question[0]} User answer is: {user_answer}')
         if (user_answer == correct_answer):
@@ -132,15 +153,15 @@ def add_info_quiz_results_table(user_answers_dict, user_name):
         try:
             query = 'insert INTO quiz_results (userID, qID, timeStarted, timeEnded, question, answer, correct, questionPoints, pointsEarned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'        
             for item in user_answers_dict.items():
-                qID = item[0][4]
+                qID = item[0][4]  # what are these indexes? 
                 timestarted = time.asctime()
                 timeended = time.asctime()
-                q = item[0][0]
-                uA = item[1][0]
-                qA = item[1][1]
+                q = item[0][0]    # use specific names 
+                uA = item[1][0]   # and here
+                qA = item[1][1]   # and here too
                 correct = 2
-                questionPoints = item[0][3]
-                pointsEarned = 150
+                questionPoints = item[0][3]   # question_points - and what are these indexes?? 
+                pointsEarned = 150   # be consistent with variable names casing, so points_earned 
                 if uA == qA:
                     correct = 1
                     pointsEarned = questionPoints
@@ -224,6 +245,8 @@ def clear_quiz_results_table():
     conn.close()
 
 
+# put this in a main function. Otherwise all this code will run when you import this file into 
+# a test file
 list = get_quiz_topics()
 user_topic_choice = topic_user_choice(list)
 res = get_questions_answers(user_topic_choice)
